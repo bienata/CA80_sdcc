@@ -1,10 +1,15 @@
             .module calo        
             ; simple intel hex loader for CA80 and Z80-SIO
             ; tasza, 2019
+			;
+			; 19200,8,N,1, kanal A
 			
 
             .include "../inc/ca80.inc"
 
+
+SIO_DATA	.equ	SIO_A_DAT
+SIO_COMMAND	.equ	SIO_A_CMD
 
             	.area _DATA 
 
@@ -43,7 +48,6 @@ main_loaderDone:
             jp 0x0000                       
 main_loaderError:
             call sendErr
-            ; beep?
             jp 0x0000           
 
             ; cALo 
@@ -78,8 +82,7 @@ procHex:    ; process hex - wypakowanie danych
             ld HL,#rx_buffer+2  ; ustaw sie na adres                        
             call ascii2byte            
             cp #>calo_end        ; chronione strony, cała bieżąca
-			cp #((calo_end>>8)+1)        ; chronione strony, cała bieżąca
-            jp C, procHex_err     ; `access violation`, exit
+            jr C, procHex_err     ; `access violation`, exit
             ld D,A              ; HI address (DE)
             inc HL
             inc HL            
@@ -128,7 +131,7 @@ loadHex_wait:
 loadHex_load:            
             call getChar
             cp #13          ; CR precz
-            jp Z,loadHex_load
+            jr Z,loadHex_load
             cp #10          ; LF - finito
             jr Z,loadHex_done
             ld (HL),A       ; do bufora
@@ -169,29 +172,29 @@ send_LF:
 			;---------------------------------------------        
     
 sioInit:
-            ld A,#0
-            out (SIO_B_CMD),A           ; WR0
+            xor a						  ; A := 0
+            out (SIO_COMMAND),A           ; WR0
 
             ld A,#1
-            out (SIO_B_CMD),A           ; ustaw WR1 
-            ld A,#0
-            out (SIO_B_CMD),A           ; WR1 := 0
+            out (SIO_COMMAND),A           ; ustaw WR1 
+            xor a						  ; A := 0
+            out (SIO_COMMAND),A           ; WR1 := 0
         
             ld  A,#4
-            out (SIO_B_CMD),A           ; ustaw WR4        
+            out (SIO_COMMAND),A           ; ustaw WR4        
             ld A,#(0x04|0x40)          ; weź baudy 9600 (bity B7,D6) nałóż 1 stop, no parity
                                         ; 0x80 - 9600, 0x40 - 19200
-            out (SIO_B_CMD),A           ;
+            out (SIO_COMMAND),A           ;
         
             ld  A,#3
-            out (SIO_B_CMD),A           ; ustaw na WR3
+            out (SIO_COMMAND),A           ; ustaw na WR3
             ld  A,#0xC1         ; 8 bit, Rx enable
-            out (SIO_B_CMD),A
+            out (SIO_COMMAND),A
         
             ld  A,#5
-            out (SIO_B_CMD),A           ; ustaw WR5
+            out (SIO_COMMAND),A           ; ustaw WR5
             ld  A,#0xEA         ; 8bit, Tx enable
-            out (SIO_B_CMD),A        
+            out (SIO_COMMAND),A        
             ret
        
 			;---------------------------------------------       
@@ -199,24 +202,24 @@ sioInit:
 putChar:
             push AF     ; zabezpiecz znaczek
 putChar_wait:
-            ld A,#0
-            out (SIO_B_CMD),A            ; wybierz RR0 wskazanego kanału
-            in  A,(SIO_B_CMD)           ; daj RR0
+            xor a						  ; A := 0
+            out (SIO_COMMAND),A            ; wybierz RR0 wskazanego kanału
+            in  A,(SIO_COMMAND)           ; daj RR0
             bit 2,A             ; czy Transfer Buffer Empty? (D2==1)
-            jr Z,putChar   ; to czekaj dalej
+            jr Z,putChar_wait   ; to czekaj dalej
             pop AF          
-            out (SIO_B_DAT),A           ; i wyślij
+            out (SIO_DATA),A           ; i wyślij
             ret             
 
 			;---------------------------------------------                        
 
 getChar:
-            ld A,#0
-            out (SIO_B_CMD),A   ; RR0
-            in  A,(SIO_B_CMD)   ; status
+            xor a						  ; A := 0
+            out (SIO_COMMAND),A   ; RR0
+            in  A,(SIO_COMMAND)   ; status
             and A,#1    ; sprawdź D0 Receive Character Available
             jr Z, getChar
-            in  A,(SIO_B_DAT)   ; weź znaczek z RxD
+            in  A,(SIO_DATA)   ; weź znaczek z RxD
             ret 
 
 calo_end:	            

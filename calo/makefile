@@ -25,7 +25,8 @@ all: $(TARGET)
 #linkowanie
 $(TARGET): $(OBJ_FILES)
 	$(LD) $(LD_FLAGS) -b _CODE=0x$(CODE_LOC) -b _DATA=0x$(DATA_LOC) $(TARGET) $(OBJ_FILES)
-	mv $(TARGET).ihx $(TARGET).hex
+	packihx $(TARGET).ihx > $(TARGET).hex
+	rm $(TARGET).ihx
 	
 #assemblacja	
 %.rel: %.s
@@ -33,10 +34,6 @@ $(TARGET): $(OBJ_FILES)
 
 loadm:	
 	$(CA80MEM) --port=/dev/ttyUSB0 --file=$(TARGET).hex --reset --verbose
-
-loads:	
-	$(CALO) /dev/ttyUSB1 $(TARGET).hex 
-
 
 clean:     
 	rm -f *.hex *.ihx *.lst *.rst *.map *.lk *.noi *.rel *.sym | true

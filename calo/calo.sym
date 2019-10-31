@@ -1,0 +1,93 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =  2710 L
+    .__.ABS.                                                    =  0000 G
+    .__.CPU.                                                    =  0000 L
+    .__.H$L.                                                    =  0000 L
+    CI                                                          =  FFC6 
+    CLR                                                         =  0010 
+    CO                                                          =  01E0 
+    COM                                                         =  01AB 
+    CSTS                                                        =  FFC3 
+    CTC_CH0                                                     =  00F8 
+    CTC_CH1                                                     =  00F9 
+    CTC_CH2                                                     =  00FA 
+    CTC_CH3                                                     =  00FB 
+    CTRL                                                        =  00E3 
+    CYF0                                                        =  FFF7 
+    CYF1                                                        =  FFF8 
+    CYF2                                                        =  FFF9 
+    CYF3                                                        =  FFFA 
+    CYF4                                                        =  FFFB 
+    CYF5                                                        =  FFFC 
+    CYF6                                                        =  FFFD 
+    CYF7                                                        =  FFFE 
+    CZAS                                                        =  022D 
+    EOM                                                         =  00FF 
+    EXPR                                                        =  0213 
+    HILO                                                        =  023B 
+    LADR                                                        =  0020 
+    LBYTE                                                       =  0018 
+    PA                                                          =  00E0 
+    PARAM                                                       =  01F4 
+    PB                                                          =  00E1 
+    PC                                                          =  00E2 
+    PRINT                                                       =  01D4 
+    SIO_A_CMD                                                   =  00EA 
+    SIO_A_DAT                                                   =  00E8 
+    SIO_BASE                                                    =  00E8 
+    SIO_B_CMD                                                   =  00EB 
+    SIO_B_DAT                                                   =  00E9 
+    SIO_COMMAND                                                 =  00EA 
+    SIO_DATA                                                    =  00E8 
+    TI                                                          =  0007 
+    USER8255                                                    =  00E0 
+    Z80CTC                                                      =  00F8 
+    ascii2byte                                                     **** GX
+  0 caloMessage                                                    0032 R
+  0 calo_end                                                       0100 R
+  0 checkCRC                                                       0037 R
+  0 checkCRC_loop                                                  003C R
+  0 getChar                                                        00F4 R
+  0 isEOF                                                          007B R
+  0 loadHex                                                        0082 R
+  0 loadHex_buffOver                                               00A8 R
+  0 loadHex_done                                                   00A5 R
+  0 loadHex_load                                                   008E R
+  0 loadHex_wait                                                   0087 R
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+  0 main                                                           0000 R
+  0 main_loaderDone                                                0026 R
+  0 main_loaderError                                               002C R
+  0 main_loadloop                                                  000D R
+  0 procHex                                                        004C R
+  0 procHex_done                                                   0076 R
+  0 procHex_err                                                    0079 R
+  0 procHex_next                                                   006D R
+  0 putChar                                                        00E6 R
+  0 putChar_wait                                                   00E7 R
+  1 rx_buffer                                                      0002 R
+    rx_buffer_len                                               =  0050 
+  0 sendAck                                                        00AA R
+  0 sendDone                                                       00B1 R
+  0 sendErr                                                        00B8 R
+  0 send_LF                                                        00BD R
+  0 sioInit                                                        00C3 R
+  1 user_stack_top                                              =  0000 R
+
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+Area Table
+
+   0 _CODE                                      size  100   flags    0
+   1 _DATA                                      size   52   flags    0
+
