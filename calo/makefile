@@ -1,5 +1,7 @@
 TARGET 		= calo
 
+APP_ID		= AA
+
 # lokalizacja segmentu kodu (EPROM), do wyboru
 # podstawka z bateryjkowa NVRAM 8kB
 CODE_LOC	= 4000
@@ -32,12 +34,25 @@ $(TARGET): $(OBJ_FILES)
 %.rel: %.s
 	$(AS) $(AS_FLAGS) -o $@  $^
 
+
+tape:
+	hex2wav $(TARGET).hex $(APP_ID) $(CODE_LOC) $(TARGET).wav
+	ffmpeg -i $(TARGET).wav -hide_banner -y -vn -ar 44100 -ac 2 -b:a 192k $(TARGET).mp3
+	rm $(TARGET).wav
+
+noise:
+	@echo "\n\n"
+	@echo "Press  [6][$(APP_ID)][=] on CA80 and be patient..."
+	@echo "\n\n"
+	export AUDIODEV=hw:2,0; play -v 3 $(TARGET).mp3
+	
+
 loadm:	
 	$(CA80MEM) --port=/dev/ttyUSB0 --file=$(TARGET).hex --reset --verbose
 
 clean:     
 	rm -f *.hex *.ihx *.lst *.rst *.map *.lk *.noi *.rel *.sym | true
-	cd ../inc ;	rm -f *.hex *.ihx *.lst *.rst *.map *.lk *.noi *.rel *.sym | true
+	cd ../inc ;	rm -f *.hex *.ihx *.lst *.rst *.map *.lk *.noi *.rel *.sym *.mp3 *.wav | true
 
 	
 cleanw:
