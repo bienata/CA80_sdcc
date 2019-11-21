@@ -44,6 +44,11 @@ TI          .equ 	0x0007   ; TI - pobranie znaku z echem
 PARAM       .equ 	0x01F4   ; PARAM - pobranie liczby 16-bit do HL z echem
 HILO        .equ 	0x023b   ; HILO - iterator, HL++, CY = !(DE >= HL)
 
+OMAG		.equ	0x071B		; odczyt z magnetofonu, w B - nazwa pliku
+ZMAG		.equ 	0x0626		; zapis na mag, HL,DE - pocz/kon, B - nazwa
+ZEOF		.equ 	0x067B		; zapis EOF na mag, B - nazwa, HL - adres wejscia
+
+
 EOM         .equ 	0xFF 
 
 

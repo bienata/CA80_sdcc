@@ -31,6 +31,7 @@ Symbol Table
     HILO                                                        =  023B 
     LADR                                                        =  0020 
     LBYTE                                                       =  0018 
+    OMAG                                                        =  071B 
     PA                                                          =  00E0 
     PARAM                                                       =  01F4 
     PB                                                          =  00E1 
@@ -41,53 +42,42 @@ Symbol Table
     SIO_BASE                                                    =  00E8 
     SIO_B_CMD                                                   =  00EB 
     SIO_B_DAT                                                   =  00E9 
-    SIO_COMMAND                                                 =  00EA 
-    SIO_DATA                                                    =  00E8 
     TI                                                          =  0007 
     USER8255                                                    =  00E0 
     Z80CTC                                                      =  00F8 
-    ascii2byte                                                     **** GX
-  0 caloMessage                                                    0032 R
-  0 calo_end                                                       0100 R
-  0 checkCRC                                                       0037 R
-  0 checkCRC_loop                                                  003C R
-  0 getChar                                                        00F4 R
-  0 isEOF                                                          007B R
-  0 loadHex                                                        0082 R
-  0 loadHex_buffOver                                               00A8 R
-  0 loadHex_done                                                   00A5 R
-  0 loadHex_load                                                   008E R
-  0 loadHex_wait                                                   0087 R
+    ZEOF                                                        =  067B 
+    ZMAG                                                        =  0626 
+  0 delay                                                          004C R
+  0 delay1                                                         004E R
+  3 errGeneral                                                     410B R
+  4 errNoFile                                                      415B R
+  5 errNoFolder                                                    420B R
+  4 errorHandler_FileNotFound                                      4150 R
+  5 errorHandler_FolderNotFound                                    4200 R
+  3 errorHandler_GeneralErr                                        4100 R
+  1 fileName                                                       0003 R
+  1 folderName                                                     0002 R
+  0 main                                                           0000 R
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
 Hexadecimal [16-Bits]
 
 Symbol Table
 
-  0 main                                                           0000 R
-  0 main_loaderDone                                                0026 R
-  0 main_loaderError                                               002C R
-  0 main_loadloop                                                  000D R
-  0 procHex                                                        004C R
-  0 procHex_done                                                   0076 R
-  0 procHex_err                                                    0079 R
-  0 procHex_next                                                   006D R
-  0 putChar                                                        00E6 R
-  0 putChar_wait                                                   00E7 R
-  1 rx_buffer                                                      0002 R
-    rx_buffer_len                                               =  0050 
-  0 sendAck                                                        00AA R
-  0 sendDone                                                       00B1 R
-  0 sendErr                                                        00B8 R
-  0 send_LF                                                        00BD R
-  0 sioInit                                                        00C3 R
+  0 msgPromptFile                                                  003A R
+  0 msgPromptFolder                                                0031 R
+  0 msgSearchin                                                    0043 R
+  0 userInput                                                      0003 R
   1 user_stack_top                                              =  0000 R
-
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
 Hexadecimal [16-Bits]
 
 Area Table
 
-   0 _CODE                                      size  100   flags    0
-   1 _DATA                                      size   52   flags    0
+   0 _CODE                                      size   56   flags    0
+   1 _DATA                                      size    4   flags    0
+   2 CODE1                                      size    0   flags    8
+   3 CODE10                                     size   14   flags    8
+   4 CODE11                                     size   14   flags    8
+   5 CODE12                                     size   14   flags    8
 

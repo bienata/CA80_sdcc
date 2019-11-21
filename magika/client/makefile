@@ -1,13 +1,13 @@
-TARGET 		= calo
+TARGET 		= mgsclient
 
-APP_ID		= AA
+APP_ID		= FF
 
 # lokalizacja segmentu kodu (EPROM), do wyboru
 # podstawka z bateryjkowa NVRAM 8kB
 CODE_LOC	= 4000
 DATA_LOC	= FF00
 
-ASM_FILES 	= calo.s ../inc/strutils.s  
+ASM_FILES 	= mgsclient.s 
 
 AOBJ_FILES 	= $(ASM_FILES:%.s=%.rel)
 OBJ_FILES 	= $(AOBJ_FILES) 
@@ -37,14 +37,14 @@ $(TARGET): $(OBJ_FILES)
 
 tape:
 	hex2wav -v -i $(TARGET).hex -n $(APP_ID) -e $(CODE_LOC) -s 8 -o $(TARGET).wav
-	ffmpeg -i $(TARGET).wav -hide_banner -y -vn -ar 44100 -ac 2 -b:a 192k $(TARGET).mp3
-	rm $(TARGET).wav
+	#ffmpeg -i $(TARGET).wav -hide_banner -y -vn -ar 44100 -ac 2 -b:a 192k $(TARGET).mp3
+	#rm $(TARGET).wav
 
 play:
 	@echo "\n\n"
 	@echo "Press  [6][$(APP_ID)][=] on CA80 and be patient..."
 	@echo "\n\n"
-	sox -v 3 $(TARGET).mp3 -t pulseaudio alsa_output.pci-0000_04_00.0.analog-stereo
+	sox -v 4 $(TARGET).wav -t pulseaudio alsa_output.pci-0000_04_00.0.analog-stereo
 	
 loadm:	
 	$(CA80MEM) --port=/dev/ttyUSB0 --file=$(TARGET).hex --reset --verbose

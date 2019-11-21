@@ -1,0 +1,107 @@
+0000-                  4               .sf 22.c000.program_demo.sym
+0000-                  5               .in ca80.inc
+0000-            I     1                               ; ciagle uzupelniam ...
+00E0-            I     2       USER8255        .eq             $E0
+0000-            I     3       PA                      .eq             0
+0001-            I     4       PB                      .eq             1
+0002-            I     5       PC                      .eq             2
+0003-            I     6       CTRL            .eq             3
+0000-            I     7                               ;
+0000-            I     8
+0000-            I     9
+00E8-            I    10       Z80SIO      .eq     $E8
+00E8-            I    11       SIO_A_DAT   .eq     Z80SIO+0
+00E9-            I    12       SIO_B_DAT   .eq     Z80SIO+1
+00EA-            I    13       SIO_A_CMD   .eq     Z80SIO+2
+00EB-            I    14       SIO_B_CMD   .eq     Z80SIO+3
+0000-            I    15
+00F8-            I    16       Z80CTC      .eq     $F8
+00F8-            I    17       CTC_CH0     .eq     Z80CTC+0
+00F9-            I    18       CTC_CH1     .eq     Z80CTC+1
+00FA-            I    19       CTC_CH2     .eq     Z80CTC+2
+00FB-            I    20       CTC_CH3     .eq     Z80CTC+3
+0000-            I    21
+0000-            I    22
+FFF7-            I    23       CYF0        .eq $FFF7
+FFF8-            I    24       CYF1        .eq $FFF8
+FFF9-            I    25       CYF2        .eq $FFF9
+FFFA-            I    26       CYF3        .eq $FFFA
+FFFB-            I    27       CYF4        .eq $FFFB
+FFFC-            I    28       CYF5        .eq $FFFC
+FFFD-            I    29       CYF6        .eq $FFFD
+FFFE-            I    30       CYF7        .eq $FFFE
+0000-            I    31
+0010-            I    32       CLR                 .eq $0010   ; CLR - kasowanie wyswietlacza
+0018-            I    33       LBYTE       .eq $0018   ; LBYTE - wyswietlenie Aku w HEX
+0020-            I    34       LADR        .eq $0020   ; LADR - wyswietlenie HL w HEX
+022D-            I    35       CZAS        .eq $022D   ; CZAS - pokazuje czas/date
+01AB-            I    36       COM                 .eq $01AB   ; COM - pokazuje znak 7-seg z rejestru C
+01D4-            I    37       PRINT       .eq $01D4   ; PRINT - drukuje komunikat z (HL)
+0213-            I    38       EXPR        .eq $0213   ; EXPR - pobranie ciagu liczb 16bit na stos
+FFC3-            I    39       CSTS        .eq $FFC3   ; CSTS - test czy klawisz nacisniety
+FFC6-            I    40       CI          .eq $FFC6   ; CI - pobranie znaku z klawiatury
+01E0-            I    41       CO          .eq $01E0   ; CO - wyswietlenie cyfry hex
+0007-            I    42       TI          .eq $0007   ; TI - pobranie znaku z echem
+01F4-            I    43       PARAM       .eq $01F4   ; PARAM - pobranie liczby 16-bit do HL z echem
+023B-            I    44       HILO        .eq $023b   ; HILO - iterator, HL++, CY = !(DE >= HL)
+0626-            I    45       ZMAG        .eq $0626   ; zapis bloku pamięci na magnetofon
+067B-            I    46       ZEOF        .eq $067b   ; zapis rekordu EOF
+071B-            I    47       OMAG        .eq $071B   ; odczyt bloku danych lub EOF-a o zadanej nazwie pod adres zapisany w zbiorze
+0000-            I    48                   ;
+00FF-            I    49       EOM         .eq $FF
+0000-            I    50
+0000-            I    51
+0000-                  6       ADDR_LO .eq 0
+0001-                  7       ADDR_HI .eq 1
+0000-                  8               .sm code                    ;
+C000-                  9               .or $c000                   ; U12/C000
+C000-                 10                       ;
+C000-                 11       .begin
+C000-DD 21 1A C0      12 ( 14)         ld IX,messageTable          ; adres tabeli komunikatów
+C004-06 05            13 (  7)         ld B,messageTableLength     ; licznik komunikatów
+C006-                 14       .loop
+C006-DD 6E 00         15 ( 19)                 ld L,(IX+ADDR_LO)                 ; do HL adres wybranego via wskaznik
+C009-DD 66 01         16 ( 19)         ld H,(IX+ADDR_HI)                 ; z IX komunikatu w kolejności LSB, MSB
+C00C-CD D4 01         17 ( 17)                 call PRINT                  ; pokaż znaki
+C00F-80               18                       .db $80                     ; na cały wyświetlacz
+C010-CD 3F C0         19 ( 17)                 call delay                  ; opóznienie
+C013-DD 23            20 ( 10)         inc IX                      ;
+C015-DD 23            21 ( 10)         inc IX                      ; IX += 2 kolejny wskaźnik
+C017-10 ED            22 ( 8+)         djnz .loop                  ; while(--licznik)
+C019-                 23                       ;
+C019-C9               24 ( 10)                 ret
+C01A-                 25                       ;
+C01A-                 26       messageTable:
+C01A-24 C0            27               .dw message1
+C01C-2D C0            28               .dw message2
+C01E-36 C0            29               .dw message3
+C020-2D C0            30               .dw message2
+C022-24 C0            31               .dw message1
+0005-                 32       messageTableLength  .eq $-messageTable/2
+C024-                 33                       ;
+C024-                 34       message1:
+C024-01 01 01 01 
+     01 01 01 01 
+     FF               35               .db     $01,$01,$01, $01, $01, $01, $01, $01, EOM
+C02D-                 36       message2:
+C02D-40 40 40 40 
+     40 40 40 40 
+     FF               37               .db     $40,$40,$40, $40, $40, $40, $40, $40, EOM
+C036-                 38       message3:
+C036-08 08 08 08 
+     08 08 08 08 
+     FF               39               .db     $08,$08,$08, $08, $08, $08, $08, $08, EOM
+C03F-                 40               ;
+C03F-C5               41 ( 11) delay:  push    BC
+C040-F5               42 ( 11)         push    AF
+C041-06 FF            43 (  7)         ld      B,$FF
+C043-                 44       .delay
+C043-76               45 (  4)         halt            ; 2ms
+C044-76               46 (  4)                 halt
+C045-10 FC            47 ( 8+)         djnz    .delay  ; while( --B )
+C047-F1               48 ( 10)         pop     AF
+C048-C1               49 ( 10)         pop     BC
+C049-C9               50 ( 10)         ret
+C04A-                 51
+C04A-                 52                       ;
+C04A-                 53

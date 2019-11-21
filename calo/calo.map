@@ -1,51 +1,0 @@
-ASxxxx Linker V03.00 + NoICE + sdld,  page 1.
-Hexadecimal  [32-Bits]
-
-Area                                    Addr        Size        Decimal Bytes (Attributes)
---------------------------------        ----        ----        ------- ----- ------------
-.  .ABS.                            00000000    00000000 =           0. bytes (ABS,CON)
-
-      Value  Global                              Global Defined In Module
-      -----  --------------------------------   ------------------------
-     00000000  .__.ABS.                           strutils
-     00000052  l__DATA                         
-     00000124  l__CODE                         
-     00004000  s__CODE                         
-     0000FF00  s__DATA                         
-
-ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
-Hexadecimal  [32-Bits]
-
-Area                                    Addr        Size        Decimal Bytes (Attributes)
---------------------------------        ----        ----        ------- ----- ------------
-_CODE                               00004000    00000124 =         292. bytes (REL,CON)
-
-      Value  Global                              Global Defined In Module
-      -----  --------------------------------   ------------------------
-     00004100  ascii2byte                         strutils
-     00004114  char2bin                           strutils
-
-ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
-Hexadecimal  [32-Bits]
-
-Area                                    Addr        Size        Decimal Bytes (Attributes)
---------------------------------        ----        ----        ------- ----- ------------
-_DATA                               0000FF00    00000052 =          82. bytes (REL,CON)
-
-      Value  Global                              Global Defined In Module
-      -----  --------------------------------   ------------------------
-ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
-
-Files Linked                              [ module(s) ]
-
-calo.rel                                  [ calo ]
-../inc/strutils.rel                       [ strutils ]
-
-ASxxxx Linker V03.00 + NoICE + sdld,  page 5.
-
-User Base Address Definitions
-
-_CODE=0x4000
-_DATA=0xFF00
-
-
