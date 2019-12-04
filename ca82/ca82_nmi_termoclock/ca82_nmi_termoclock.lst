@@ -1,0 +1,445 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 3.5.0 #9253 (Apr  3 2018) (Linux)
+                              4 ; This file was generated Wed Dec  4 20:27:15 2019
+                              5 ;--------------------------------------------------------
+                              6 	.module ca82_nmi_termoclock
+                              7 	.optsdcc -mz80
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _main
+                             13 	.globl _getTLC1549
+                             14 	.globl _dlr1414putStr
+                             15 	.globl _NMI_handler
+                             16 	.globl _updateClock
+                             17 	.globl _sprintf
+                             18 	.globl _nmiCntr
+                             19 	.globl _tenths
+                             20 	.globl _seconds
+                             21 	.globl _minutes
+                             22 	.globl _hours
+                             23 ;--------------------------------------------------------
+                             24 ; special function registers
+                             25 ;--------------------------------------------------------
+                     00E0    26 _USER8255_PA	=	0x00e0
+                     00E1    27 _USER8255_PB	=	0x00e1
+                     00E2    28 _USER8255_PC	=	0x00e2
+                     00E3    29 _USER8255_CTRL	=	0x00e3
+                             30 ;--------------------------------------------------------
+                             31 ; ram data
+                             32 ;--------------------------------------------------------
+                             33 	.area _DATA
+                             34 ;--------------------------------------------------------
+                             35 ; ram data
+                             36 ;--------------------------------------------------------
+                             37 	.area _INITIALIZED
+   0000                      38 _hours::
+   0000                      39 	.ds 1
+   0001                      40 _minutes::
+   0001                      41 	.ds 1
+   0002                      42 _seconds::
+   0002                      43 	.ds 1
+   0003                      44 _tenths::
+   0003                      45 	.ds 1
+   0004                      46 _nmiCntr::
+   0004                      47 	.ds 1
+                             48 ;--------------------------------------------------------
+                             49 ; absolute external ram data
+                             50 ;--------------------------------------------------------
+                             51 	.area _DABS (ABS)
+                             52 ;--------------------------------------------------------
+                             53 ; global & static initialisations
+                             54 ;--------------------------------------------------------
+                             55 	.area _HOME
+                             56 	.area _GSINIT
+                             57 	.area _GSFINAL
+                             58 	.area _GSINIT
+                             59 ;--------------------------------------------------------
+                             60 ; Home
+                             61 ;--------------------------------------------------------
+                             62 	.area _HOME
+                             63 	.area _HOME
+                             64 ;--------------------------------------------------------
+                             65 ; code
+                             66 ;--------------------------------------------------------
+                             67 	.area _CODE
+                             68 ;ca82_nmi_termoclock.c:26: void updateClock(void) {
+                             69 ;	---------------------------------
+                             70 ; Function updateClock
+                             71 ; ---------------------------------
+   0000                      72 _updateClock::
+                             73 ;ca82_nmi_termoclock.c:27: tenths++;
+   0000 21r03r00      [10]   74 	ld	hl, #_tenths+0
+   0003 34            [11]   75 	inc	(hl)
+                             76 ;ca82_nmi_termoclock.c:28: if ( tenths == 10 ) {
+   0004 3Ar03r00      [13]   77 	ld	a,(#_tenths + 0)
+   0007 D6 0A         [ 7]   78 	sub	a, #0x0A
+   0009 C0            [11]   79 	ret	NZ
+                             80 ;ca82_nmi_termoclock.c:29: tenths = 0;
+   000A 21r03r00      [10]   81 	ld	hl,#_tenths + 0
+   000D 36 00         [10]   82 	ld	(hl), #0x00
+                             83 ;ca82_nmi_termoclock.c:30: seconds++;
+   000F 21r02r00      [10]   84 	ld	hl, #_seconds+0
+   0012 34            [11]   85 	inc	(hl)
+                             86 ;ca82_nmi_termoclock.c:31: if ( seconds == 60 ) {
+   0013 3Ar02r00      [13]   87 	ld	a,(#_seconds + 0)
+   0016 D6 3C         [ 7]   88 	sub	a, #0x3C
+   0018 C0            [11]   89 	ret	NZ
+                             90 ;ca82_nmi_termoclock.c:32: seconds = 0;
+   0019 21r02r00      [10]   91 	ld	hl,#_seconds + 0
+   001C 36 00         [10]   92 	ld	(hl), #0x00
+                             93 ;ca82_nmi_termoclock.c:33: minutes++;
+   001E 21r01r00      [10]   94 	ld	hl, #_minutes+0
+   0021 34            [11]   95 	inc	(hl)
+                             96 ;ca82_nmi_termoclock.c:34: if ( minutes == 60 ) {
+   0022 3Ar01r00      [13]   97 	ld	a,(#_minutes + 0)
+   0025 D6 3C         [ 7]   98 	sub	a, #0x3C
+   0027 C0            [11]   99 	ret	NZ
+                            100 ;ca82_nmi_termoclock.c:35: minutes = 0;
+   0028 21r01r00      [10]  101 	ld	hl,#_minutes + 0
+   002B 36 00         [10]  102 	ld	(hl), #0x00
+                            103 ;ca82_nmi_termoclock.c:36: hours++;
+   002D 21r00r00      [10]  104 	ld	hl, #_hours+0
+   0030 34            [11]  105 	inc	(hl)
+                            106 ;ca82_nmi_termoclock.c:37: if ( hours == 24 ) {
+   0031 3Ar00r00      [13]  107 	ld	a,(#_hours + 0)
+   0034 D6 18         [ 7]  108 	sub	a, #0x18
+   0036 C0            [11]  109 	ret	NZ
+                            110 ;ca82_nmi_termoclock.c:38: hours = 0;
+   0037 21r00r00      [10]  111 	ld	hl,#_hours + 0
+   003A 36 00         [10]  112 	ld	(hl), #0x00
+   003C C9            [10]  113 	ret
+                            114 ;ca82_nmi_termoclock.c:48: void NMI_handler(void) __interrupt __critical {    
+                            115 ;	---------------------------------
+                            116 ; Function NMI_handler
+                            117 ; ---------------------------------
+   003D                     118 _NMI_handler::
+   003D F5            [11]  119 	push	af
+   003E C5            [11]  120 	push	bc
+   003F D5            [11]  121 	push	de
+   0040 E5            [11]  122 	push	hl
+   0041 FD E5         [15]  123 	push	iy
+                            124 ;ca82_nmi_termoclock.c:49: nmiCntr++;
+   0043 21r04r00      [10]  125 	ld	hl, #_nmiCntr+0
+   0046 34            [11]  126 	inc	(hl)
+                            127 ;ca82_nmi_termoclock.c:50: if ( nmiCntr == 40 ) {
+   0047 3Ar04r00      [13]  128 	ld	a,(#_nmiCntr + 0)
+   004A D6 28         [ 7]  129 	sub	a, #0x28
+   004C 20 08         [12]  130 	jr	NZ,00103$
+                            131 ;ca82_nmi_termoclock.c:51: nmiCntr = 0;
+   004E 21r04r00      [10]  132 	ld	hl,#_nmiCntr + 0
+   0051 36 00         [10]  133 	ld	(hl), #0x00
+                            134 ;ca82_nmi_termoclock.c:52: updateClock(); // co 100 ms.
+   0053 CDr00r00      [17]  135 	call	_updateClock
+   0056                     136 00103$:
+   0056 FD E1         [14]  137 	pop	iy
+   0058 E1            [10]  138 	pop	hl
+   0059 D1            [10]  139 	pop	de
+   005A C1            [10]  140 	pop	bc
+   005B F1            [10]  141 	pop	af
+   005C ED 45         [14]  142 	retn
+                            143 ;ca82_nmi_termoclock.c:58: void dlr1414putStr( char *pS ) {
+                            144 ;	---------------------------------
+                            145 ; Function dlr1414putStr
+                            146 ; ---------------------------------
+   005E                     147 _dlr1414putStr::
+   005E DD E5         [15]  148 	push	ix
+   0060 DD 21 00 00   [14]  149 	ld	ix,#0
+   0064 DD 39         [15]  150 	add	ix,sp
+   0066 3B            [ 6]  151 	dec	sp
+                            152 ;ca82_nmi_termoclock.c:59: char *p = pS;
+   0067 DD 5E 04      [19]  153 	ld	e,4 (ix)
+   006A DD 56 05      [19]  154 	ld	d,5 (ix)
+                            155 ;ca82_nmi_termoclock.c:61: while ( *p && (n >= 0) ) {
+   006D 01 13 00      [10]  156 	ld	bc,#0x0013
+   0070                     157 00102$:
+   0070 1A            [ 7]  158 	ld	a,(de)
+   0071 67            [ 4]  159 	ld	h,a
+   0072 B7            [ 4]  160 	or	a, a
+   0073 28 1B         [12]  161 	jr	Z,00105$
+   0075 CB 78         [ 8]  162 	bit	7, b
+   0077 20 17         [12]  163 	jr	NZ,00105$
+                            164 ;ca82_nmi_termoclock.c:62: USER8255_PA = *p;
+   0079 7C            [ 4]  165 	ld	a,h
+   007A D3 E0         [11]  166 	out	(_USER8255_PA),a
+                            167 ;ca82_nmi_termoclock.c:63: USER8255_PB	= n;
+   007C DD 71 FF      [19]  168 	ld	-1 (ix), c
+   007F 79            [ 4]  169 	ld	a, c
+   0080 D3 E1         [11]  170 	out	(_USER8255_PB),a
+                            171 ;ca82_nmi_termoclock.c:64: USER8255_PB	= 0x20 + n;
+   0082 79            [ 4]  172 	ld	a,c
+   0083 C6 20         [ 7]  173 	add	a, #0x20
+   0085 D3 E1         [11]  174 	out	(_USER8255_PB),a
+                            175 ;ca82_nmi_termoclock.c:65: USER8255_PB	= n;
+   0087 DD 7E FF      [19]  176 	ld	a,-1 (ix)
+   008A D3 E1         [11]  177 	out	(_USER8255_PB),a
+                            178 ;ca82_nmi_termoclock.c:66: p++;
+   008C 13            [ 6]  179 	inc	de
+                            180 ;ca82_nmi_termoclock.c:67: --n;
+   008D 0B            [ 6]  181 	dec	bc
+   008E 18 E0         [12]  182 	jr	00102$
+   0090                     183 00105$:
+   0090 33            [ 6]  184 	inc	sp
+   0091 DD E1         [14]  185 	pop	ix
+   0093 C9            [10]  186 	ret
+                            187 ;ca82_nmi_termoclock.c:73: unsigned short getTLC1549( void ) {
+                            188 ;	---------------------------------
+                            189 ; Function getTLC1549
+                            190 ; ---------------------------------
+   0094                     191 _getTLC1549::
+                            192 ;ca82_nmi_termoclock.c:74: unsigned short out = 0;
+   0094 01 00 00      [10]  193 	ld	bc,#0x0000
+                            194 ;ca82_nmi_termoclock.c:76: USER8255_PC = 0;	// CLK=0, /CS=0
+   0097 3E 00         [ 7]  195 	ld	a,#0x00
+   0099 D3 E2         [11]  196 	out	(_USER8255_PC),a
+                            197 ;ca82_nmi_termoclock.c:77: for ( n = 0; n < 10; n++ ) {
+   009B 16 00         [ 7]  198 	ld	d,#0x00
+   009D                     199 00102$:
+                            200 ;ca82_nmi_termoclock.c:78: out = out << 1;
+   009D CB 21         [ 8]  201 	sla	c
+   009F CB 10         [ 8]  202 	rl	b
+                            203 ;ca82_nmi_termoclock.c:79: out = out | ( USER8255_PC & 0x80 ? 1 : 0 );
+   00A1 DB E2         [11]  204 	in	a,(_USER8255_PC)
+   00A3 07            [ 4]  205 	rlca
+   00A4 30 04         [12]  206 	jr	NC,00106$
+   00A6 26 01         [ 7]  207 	ld	h,#0x01
+   00A8 18 02         [12]  208 	jr	00107$
+   00AA                     209 00106$:
+   00AA 26 00         [ 7]  210 	ld	h,#0x00
+   00AC                     211 00107$:
+   00AC 2E 00         [ 7]  212 	ld	l,#0x00
+   00AE 79            [ 4]  213 	ld	a,c
+   00AF B4            [ 4]  214 	or	a, h
+   00B0 4F            [ 4]  215 	ld	c,a
+   00B1 78            [ 4]  216 	ld	a,b
+   00B2 B5            [ 4]  217 	or	a, l
+   00B3 47            [ 4]  218 	ld	b,a
+                            219 ;ca82_nmi_termoclock.c:80: USER8255_PC = 2; // CLK=1, /CS=0
+   00B4 3E 02         [ 7]  220 	ld	a,#0x02
+   00B6 D3 E2         [11]  221 	out	(_USER8255_PC),a
+                            222 ;ca82_nmi_termoclock.c:81: USER8255_PC = 0; // CLK=0, /CS=0
+   00B8 3E 00         [ 7]  223 	ld	a,#0x00
+   00BA D3 E2         [11]  224 	out	(_USER8255_PC),a
+                            225 ;ca82_nmi_termoclock.c:77: for ( n = 0; n < 10; n++ ) {
+   00BC 14            [ 4]  226 	inc	d
+   00BD 7A            [ 4]  227 	ld	a,d
+   00BE D6 0A         [ 7]  228 	sub	a, #0x0A
+   00C0 38 DB         [12]  229 	jr	C,00102$
+                            230 ;ca82_nmi_termoclock.c:83: USER8255_PC = 1;	// CLK=0, /CS=1	
+   00C2 3E 01         [ 7]  231 	ld	a,#0x01
+   00C4 D3 E2         [11]  232 	out	(_USER8255_PC),a
+                            233 ;ca82_nmi_termoclock.c:84: return out;
+   00C6 69            [ 4]  234 	ld	l, c
+   00C7 60            [ 4]  235 	ld	h, b
+   00C8 C9            [10]  236 	ret
+                            237 ;ca82_nmi_termoclock.c:89: void main( void ) {
+                            238 ;	---------------------------------
+                            239 ; Function main
+                            240 ; ---------------------------------
+   00C9                     241 _main::
+   00C9 DD E5         [15]  242 	push	ix
+   00CB DD 21 00 00   [14]  243 	ld	ix,#0
+   00CF DD 39         [15]  244 	add	ix,sp
+   00D1 21 CD FF      [10]  245 	ld	hl,#-51
+   00D4 39            [11]  246 	add	hl,sp
+   00D5 F9            [ 6]  247 	ld	sp,hl
+                            248 ;ca82_nmi_termoclock.c:95: unsigned char lastSecond = 0;
+   00D6 0E 00         [ 7]  249 	ld	c,#0x00
+                            250 ;ca82_nmi_termoclock.c:100: USER8255_CTRL = 0x88; // PC74-in, reszta-out
+   00D8 3E 88         [ 7]  251 	ld	a,#0x88
+   00DA D3 E3         [11]  252 	out	(_USER8255_CTRL),a
+                            253 ;ca82_nmi_termoclock.c:101: USER8255_PA = 0x00;
+   00DC 3E 00         [ 7]  254 	ld	a,#0x00
+   00DE D3 E0         [11]  255 	out	(_USER8255_PA),a
+                            256 ;ca82_nmi_termoclock.c:102: USER8255_PB = 0x00;
+   00E0 3E 00         [ 7]  257 	ld	a,#0x00
+   00E2 D3 E1         [11]  258 	out	(_USER8255_PB),a
+                            259 ;ca82_nmi_termoclock.c:103: USER8255_PC = 0x01; //  /CS=1, CLK=0
+   00E4 3E 01         [ 7]  260 	ld	a,#0x01
+   00E6 D3 E2         [11]  261 	out	(_USER8255_PC),a
+                            262 ;ca82_nmi_termoclock.c:106: while( 1 ) {
+   00E8                     263 00105$:
+                            264 ;ca82_nmi_termoclock.c:108: if ( lastSecond != seconds ) {
+   00E8 3Ar02r00      [13]  265 	ld	a,(#_seconds + 0)
+   00EB 91            [ 4]  266 	sub	a, c
+   00EC 28 FA         [12]  267 	jr	Z,00105$
+                            268 ;ca82_nmi_termoclock.c:109: lastSecond = seconds;
+   00EE 21r02r00      [10]  269 	ld	hl,#_seconds + 0
+   00F1 4E            [ 7]  270 	ld	c, (hl)
+                            271 ;ca82_nmi_termoclock.c:111: idx = lastSecond % READINGS_NUM;
+   00F2 C5            [11]  272 	push	bc
+   00F3 3E 0A         [ 7]  273 	ld	a,#0x0A
+   00F5 F5            [11]  274 	push	af
+   00F6 33            [ 6]  275 	inc	sp
+   00F7 79            [ 4]  276 	ld	a,c
+   00F8 F5            [11]  277 	push	af
+   00F9 33            [ 6]  278 	inc	sp
+   00FA CDr00r00      [17]  279 	call	__moduchar
+   00FD F1            [10]  280 	pop	af
+   00FE C1            [10]  281 	pop	bc
+   00FF 55            [ 4]  282 	ld	d,l
+                            283 ;ca82_nmi_termoclock.c:112: adcReadings[ idx ] = getTLC1549();
+   0100 21 15 00      [10]  284 	ld	hl,#0x0015
+   0103 39            [11]  285 	add	hl,sp
+   0104 DD 75 F8      [19]  286 	ld	-8 (ix),l
+   0107 DD 74 F9      [19]  287 	ld	-7 (ix),h
+   010A 6A            [ 4]  288 	ld	l,d
+   010B 26 00         [ 7]  289 	ld	h,#0x00
+   010D 29            [11]  290 	add	hl, hl
+   010E DD 5E F8      [19]  291 	ld	e,-8 (ix)
+   0111 DD 56 F9      [19]  292 	ld	d,-7 (ix)
+   0114 19            [11]  293 	add	hl,de
+   0115 E5            [11]  294 	push	hl
+   0116 C5            [11]  295 	push	bc
+   0117 CDr94r00      [17]  296 	call	_getTLC1549
+   011A 55            [ 4]  297 	ld	d,l
+   011B 5C            [ 4]  298 	ld	e,h
+   011C C1            [10]  299 	pop	bc
+   011D E1            [10]  300 	pop	hl
+   011E 72            [ 7]  301 	ld	(hl),d
+   011F 23            [ 6]  302 	inc	hl
+   0120 73            [ 7]  303 	ld	(hl),e
+                            304 ;ca82_nmi_termoclock.c:114: adcAvg = 0;
+   0121 FD 21 00 00   [14]  305 	ld	iy,#0x0000
+                            306 ;ca82_nmi_termoclock.c:115: for (idx = 0; idx < READINGS_NUM; idx++ ) {
+   0125 06 00         [ 7]  307 	ld	b,#0x00
+   0127                     308 00107$:
+                            309 ;ca82_nmi_termoclock.c:116: adcAvg += adcReadings[ idx ];
+   0127 68            [ 4]  310 	ld	l,b
+   0128 26 00         [ 7]  311 	ld	h,#0x00
+   012A 29            [11]  312 	add	hl, hl
+   012B DD 5E F8      [19]  313 	ld	e,-8 (ix)
+   012E DD 56 F9      [19]  314 	ld	d,-7 (ix)
+   0131 19            [11]  315 	add	hl,de
+   0132 5E            [ 7]  316 	ld	e,(hl)
+   0133 23            [ 6]  317 	inc	hl
+   0134 56            [ 7]  318 	ld	d,(hl)
+   0135 FD 19         [15]  319 	add	iy, de
+                            320 ;ca82_nmi_termoclock.c:115: for (idx = 0; idx < READINGS_NUM; idx++ ) {
+   0137 04            [ 4]  321 	inc	b
+   0138 78            [ 4]  322 	ld	a,b
+   0139 D6 0A         [ 7]  323 	sub	a, #0x0A
+   013B 38 EA         [12]  324 	jr	C,00107$
+                            325 ;ca82_nmi_termoclock.c:118: adcAvg /= READINGS_NUM;
+   013D C5            [11]  326 	push	bc
+   013E 21 0A 00      [10]  327 	ld	hl,#0x000A
+   0141 E5            [11]  328 	push	hl
+   0142 FD E5         [15]  329 	push	iy
+   0144 CDr00r00      [17]  330 	call	__divsint
+   0147 F1            [10]  331 	pop	af
+   0148 F1            [10]  332 	pop	af
+   0149 C1            [10]  333 	pop	bc
+                            334 ;ca82_nmi_termoclock.c:121: temp = (adcAvg*4 - 500)/10; // dla Uref MCP1541 (4.096)
+   014A 29            [11]  335 	add	hl, hl
+   014B 29            [11]  336 	add	hl, hl
+   014C 7D            [ 4]  337 	ld	a,l
+   014D C6 0C         [ 7]  338 	add	a,#0x0C
+   014F 6F            [ 4]  339 	ld	l,a
+   0150 7C            [ 4]  340 	ld	a,h
+   0151 CE FE         [ 7]  341 	adc	a,#0xFE
+   0153 67            [ 4]  342 	ld	h,a
+   0154 C5            [11]  343 	push	bc
+   0155 11 0A 00      [10]  344 	ld	de,#0x000A
+   0158 D5            [11]  345 	push	de
+   0159 E5            [11]  346 	push	hl
+   015A CDr00r00      [17]  347 	call	__divsint
+   015D F1            [10]  348 	pop	af
+   015E F1            [10]  349 	pop	af
+   015F C1            [10]  350 	pop	bc
+   0160 EB            [ 4]  351 	ex	de,hl
+                            352 ;ca82_nmi_termoclock.c:122: colon = seconds % 2 ? ':' : ' ';
+   0161 21r02r00      [10]  353 	ld	hl,#_seconds+0
+   0164 CB 46         [12]  354 	bit	0, (hl)
+   0166 28 04         [12]  355 	jr	Z,00111$
+   0168 06 3A         [ 7]  356 	ld	b,#0x3A
+   016A 18 02         [12]  357 	jr	00112$
+   016C                     358 00111$:
+   016C 06 20         [ 7]  359 	ld	b,#0x20
+   016E                     360 00112$:
+                            361 ;ca82_nmi_termoclock.c:123: sprintf( sText, "%02d:%02d%c%02d outd. %+2d'C", hours, minutes, colon, seconds, temp );
+   016E 3Ar02r00      [13]  362 	ld	a,(#_seconds + 0)
+   0171 DD 77 F8      [19]  363 	ld	-8 (ix),a
+   0174 DD 36 F9 00   [19]  364 	ld	-7 (ix),#0x00
+   0178 DD 70 FA      [19]  365 	ld	-6 (ix),b
+   017B 78            [ 4]  366 	ld	a,b
+   017C 17            [ 4]  367 	rla
+   017D 9F            [ 4]  368 	sbc	a, a
+   017E DD 77 FB      [19]  369 	ld	-5 (ix),a
+   0181 3Ar01r00      [13]  370 	ld	a,(#_minutes + 0)
+   0184 DD 77 F6      [19]  371 	ld	-10 (ix),a
+   0187 DD 36 F7 00   [19]  372 	ld	-9 (ix),#0x00
+   018B 3Ar00r00      [13]  373 	ld	a,(#_hours + 0)
+   018E DD 77 FE      [19]  374 	ld	-2 (ix),a
+   0191 DD 36 FF 00   [19]  375 	ld	-1 (ix),#0x00
+   0195 21 00 00      [10]  376 	ld	hl,#0x0000
+   0198 39            [11]  377 	add	hl,sp
+   0199 DD 75 FC      [19]  378 	ld	-4 (ix),l
+   019C DD 74 FD      [19]  379 	ld	-3 (ix),h
+   019F DD 6E FC      [19]  380 	ld	l,-4 (ix)
+   01A2 DD 66 FD      [19]  381 	ld	h,-3 (ix)
+   01A5 C5            [11]  382 	push	bc
+   01A6 D5            [11]  383 	push	de
+   01A7 DD 5E F8      [19]  384 	ld	e,-8 (ix)
+   01AA DD 56 F9      [19]  385 	ld	d,-7 (ix)
+   01AD D5            [11]  386 	push	de
+   01AE DD 5E FA      [19]  387 	ld	e,-6 (ix)
+   01B1 DD 56 FB      [19]  388 	ld	d,-5 (ix)
+   01B4 D5            [11]  389 	push	de
+   01B5 DD 5E F6      [19]  390 	ld	e,-10 (ix)
+   01B8 DD 56 F7      [19]  391 	ld	d,-9 (ix)
+   01BB D5            [11]  392 	push	de
+   01BC DD 5E FE      [19]  393 	ld	e,-2 (ix)
+   01BF DD 56 FF      [19]  394 	ld	d,-1 (ix)
+   01C2 D5            [11]  395 	push	de
+   01C3 11rEBr01      [10]  396 	ld	de,#___str_0
+   01C6 D5            [11]  397 	push	de
+   01C7 E5            [11]  398 	push	hl
+   01C8 CDr00r00      [17]  399 	call	_sprintf
+   01CB 21 0E 00      [10]  400 	ld	hl,#14
+   01CE 39            [11]  401 	add	hl,sp
+   01CF F9            [ 6]  402 	ld	sp,hl
+   01D0 C1            [10]  403 	pop	bc
+                            404 ;ca82_nmi_termoclock.c:124: dlr1414putStr( SPACES );
+   01D1 21r08r02      [10]  405 	ld	hl,#___str_1+0
+   01D4 C5            [11]  406 	push	bc
+   01D5 E5            [11]  407 	push	hl
+   01D6 CDr5Er00      [17]  408 	call	_dlr1414putStr
+   01D9 F1            [10]  409 	pop	af
+   01DA C1            [10]  410 	pop	bc
+                            411 ;ca82_nmi_termoclock.c:125: dlr1414putStr( sText );
+   01DB DD 6E FC      [19]  412 	ld	l,-4 (ix)
+   01DE DD 66 FD      [19]  413 	ld	h,-3 (ix)
+   01E1 C5            [11]  414 	push	bc
+   01E2 E5            [11]  415 	push	hl
+   01E3 CDr5Er00      [17]  416 	call	_dlr1414putStr
+   01E6 F1            [10]  417 	pop	af
+   01E7 C1            [10]  418 	pop	bc
+   01E8 C3rE8r00      [10]  419 	jp	00105$
+   01EB                     420 ___str_0:
+   01EB 25 30 32 64 3A 25   421 	.ascii "%02d:%02d%c%02d outd. %+2d'C"
+        30 32 64 25 63 25
+        30 32 64 20 6F 75
+        74 64 2E 20 25 2B
+        32 64 27 43
+   0207 00                  422 	.db 0x00
+   0208                     423 ___str_1:
+   0208 20 20 20 20 20 20   424 	.ascii "                    "
+        20 20 20 20 20 20
+        20 20 20 20 20 20
+        20 20
+   021C 00                  425 	.db 0x00
+                            426 	.area _CODE
+                            427 	.area _INITIALIZER
+   0000                     428 __xinit__hours:
+   0000 00                  429 	.db #0x00	; 0
+   0001                     430 __xinit__minutes:
+   0001 00                  431 	.db #0x00	; 0
+   0002                     432 __xinit__seconds:
+   0002 00                  433 	.db #0x00	; 0
+   0003                     434 __xinit__tenths:
+   0003 00                  435 	.db #0x00	; 0
+   0004                     436 __xinit__nmiCntr:
+   0004 00                  437 	.db #0x00	; 0
+                            438 	.area _CABS (ABS)

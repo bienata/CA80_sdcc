@@ -1,0 +1,11 @@
+-mjwx
+-i ca82_nmi_termoclock.ihx
+-b _CODE = 0x0200
+-b _DATA = 0x8000
+-k /usr/bin/../share/sdcc/lib/z80
+-k /usr/share/sdcc/lib/z80
+-l z80
+crt0ca82.rel
+ca82_nmi_termoclock.rel
+
+-e

@@ -1,0 +1,114 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+
+
+                              1 ;--------------------------------------------------------------------------
+                              2 ;  crt0.s - Generic crt0.s for a Z80
+                              3 ;
+                              4 ;  Copyright (C) 2000, Michael Hope
+                              5 ;
+                              6 ;  This library is free software; you can redistribute it and/or modify it
+                              7 ;  under the terms of the GNU General Public License as published by the
+                              8 ;  Free Software Foundation; either version 2, or (at your option) any
+                              9 ;  later version.
+                             10 ;
+                             11 ;  This library is distributed in the hope that it will be useful,
+                             12 ;  but WITHOUT ANY WARRANTY; without even the implied warranty of
+                             13 ;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+                             14 ;  GNU General Public License for more details.
+                             15 ;
+                             16 ;  You should have received a copy of the GNU General Public License 
+                             17 ;  along with this library; see the file COPYING. If not, write to the
+                             18 ;  Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston,
+                             19 ;   MA 02110-1301, USA.
+                             20 ;
+                             21 ;  As a special exception, if you link this library with other files,
+                             22 ;  some of which are compiled with SDCC, to produce an executable,
+                             23 ;  this library does not by itself cause the resulting executable to
+                             24 ;  be covered by the GNU General Public License. This exception does
+                             25 ;  not however invalidate any other reasons why the executable file
+                             26 ;   might be covered by the GNU General Public License.
+                             27 ;--------------------------------------------------------------------------
+                             28 
+                             29 	.module crt0
+                             30 	.globl	_main
+                             31 	.globl 	_NMI_handler
+                             32 
+                             33 	.area	_HEADER (ABS)
+                             34 	;; Reset vector
+   0000                      35 	.org 	0x0000       
+   0000                      36 init:
+                             37 	;; Stack at the top of memory.
+   0000 31 FF FF      [10]   38 	ld	sp,#0xFFFF       
+                             39 
+                             40         ;; Initialise global variables
+   0003 CD 00 00      [17]   41     call    gsinit
+   0006 CD 00 00      [17]   42 	call	_main
+   0009 C3 09 00      [10]   43 1$: jp      1$  
+                             44 
+                             45 
+   0066                      46 	.org 0x0066
+   0066 C3 00 00      [10]   47 	jp _NMI_handler
+                             48 
+                             49 
+                             50 	;; Ordering of segments for the linker.
+                             51 	.area	_HOME
+                             52 	.area	_CODE
+                             53 	.area	_INITIALIZER
+                             54 	.area   _GSINIT
+                             55 	.area   _GSFINAL
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+
+
+                             56 
+                             57 	.area	_DATA
+                             58 	.area	_INITIALIZED
+                             59 	.area	_BSEG
+                             60 	.area   _BSS
+                             61 	.area   _HEAP
+                             62 	
+                             63 	.area   _GSINIT
+   0000                      64 gsinit::
+   0000 01 00 00      [10]   65 	ld	bc, #l__INITIALIZER
+   0003 78            [ 4]   66 	ld	a, b
+   0004 B1            [ 4]   67 	or	a, c
+   0005 28 08         [12]   68 	jr	Z, gsinit_next
+   0007 11 00 00      [10]   69 	ld	de, #s__INITIALIZED
+   000A 21 00 00      [10]   70 	ld	hl, #s__INITIALIZER
+   000D ED B0         [21]   71 	ldir
+   000F                      72 gsinit_next:
+                             73 	.area   _GSFINAL
+   0000 C9            [10]   74 	ret
+                             75 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.=  2710 L   |     .__.ABS.=  0000 G   |     .__.CPU.=  0000 L
+    .__.H$L.=  0000 L   |     _NMI_han   **** GX  |     _main      **** GX
+  6 gsinit     0000 GR  |   6 gsinit_n   000F R   |   2 init       0000 R
+    l__INITI   **** GX  |     s__INITI   **** GX  |     s__INITI   **** GX
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
+Hexadecimal [16-Bits]
+
+Area Table
+
+   0 _CODE      size    0   flags    0
+   1 _HEADER    size    0   flags    8
+   2 _HEADER0   size    C   flags    8
+   3 _HEADER1   size    3   flags    8
+   4 _HOME      size    0   flags    0
+   5 _INITIAL   size    0   flags    0
+   6 _GSINIT    size    F   flags    0
+   7 _GSFINAL   size    1   flags    0
+   8 _DATA      size    0   flags    0
+   9 _INITIAL   size    0   flags    0
+   A _BSEG      size    0   flags    0
+   B _BSS       size    0   flags    0
+   C _HEAP      size    0   flags    0
+
